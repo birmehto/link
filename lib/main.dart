@@ -8,17 +8,12 @@ import 'core/services/deep_link_service.dart';
 import 'core/services/network_service.dart';
 import 'features/books/services/book_service.dart';
 
-/// Application entry point
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize core services
   await _initializeServices();
-
   runApp(const BookApp());
 }
 
-/// Initialize all required services
 Future<void> _initializeServices() async {
   await GetStorage.init();
 
