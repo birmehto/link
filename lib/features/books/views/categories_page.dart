@@ -8,17 +8,42 @@ class CategoriesPage extends StatelessWidget {
   const CategoriesPage({super.key});
 
   static final List<CategoryItem> _categories = [
-    CategoryItem('Fiction', Icons.auto_stories, Colors.blue, 'fiction'),
-    CategoryItem('Non-Fiction', Icons.fact_check, Colors.green, 'nonfiction'),
-    CategoryItem('Science', Icons.science, Colors.purple, 'science'),
-    CategoryItem('Technology', Icons.computer, Colors.indigo, 'technology'),
-    CategoryItem('History', Icons.history_edu, Colors.brown, 'history'),
-    CategoryItem('Biography', Icons.person_pin, Colors.orange, 'biography'),
-    CategoryItem('Philosophy', Icons.psychology, Colors.teal, 'philosophy'),
-    CategoryItem('Art', Icons.palette, Colors.pink, 'art'),
-    CategoryItem('Religion', Icons.temple_hindu, Colors.amber, 'religion'),
-    CategoryItem('Health', Icons.health_and_safety, Colors.red, 'health'),
-    CategoryItem('Business', Icons.business, Colors.cyan, 'business'),
+    const CategoryItem('Fiction', Icons.auto_stories, Colors.blue, 'fiction'),
+    const CategoryItem(
+      'Non-Fiction',
+      Icons.fact_check,
+      Colors.green,
+      'nonfiction',
+    ),
+    const CategoryItem('Science', Icons.science, Colors.purple, 'science'),
+    const CategoryItem(
+      'Technology',
+      Icons.computer,
+      Colors.indigo,
+      'technology',
+    ),
+    const CategoryItem('History', Icons.history_edu, Colors.brown, 'history'),
+    const CategoryItem(
+      'Biography',
+      Icons.person_pin,
+      Colors.orange,
+      'biography',
+    ),
+    const CategoryItem(
+      'Philosophy',
+      Icons.psychology,
+      Colors.teal,
+      'philosophy',
+    ),
+    const CategoryItem('Art', Icons.palette, Colors.pink, 'art'),
+    const CategoryItem(
+      'Religion',
+      Icons.temple_hindu,
+      Colors.amber,
+      'religion',
+    ),
+    const CategoryItem('Health', Icons.health_and_safety, Colors.red, 'health'),
+    const CategoryItem('Business', Icons.business, Colors.cyan, 'business'),
     CategoryItem('Romance', Icons.favorite, Colors.pink.shade300, 'romance'),
   ];
 
@@ -29,7 +54,6 @@ class CategoriesPage extends StatelessWidget {
         SliverAppBar(
           expandedHeight: 90,
           collapsedHeight: 64,
-          floating: false,
           pinned: true,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           flexibleSpace: FlexibleSpaceBar(
@@ -127,10 +151,9 @@ class CategoriesPage extends StatelessWidget {
 }
 
 class CategoryItem {
+  const CategoryItem(this.name, this.icon, this.color, this.query);
   final String name;
   final IconData icon;
   final Color color;
   final String query;
-
-  const CategoryItem(this.name, this.icon, this.color, this.query);
 }

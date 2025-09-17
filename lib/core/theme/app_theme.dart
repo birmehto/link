@@ -55,32 +55,19 @@ class AppTheme {
 
   // Light Theme
   static ThemeData get light {
-    final colorScheme = ColorScheme.light(
+    final colorScheme = const ColorScheme.light(
       primary: primary,
-      onPrimary: Colors.white,
-      secondary: secondary,
-      onSecondary: Colors.black,
-      error: error,
-      onError: Colors.white,
       surface: surface,
       onSurface: Colors.black87,
-      brightness: Brightness.light,
     );
     return _buildTheme(colorScheme, Brightness.light);
   }
 
   // Dark Theme
   static ThemeData get dark {
-    final colorScheme = ColorScheme.dark(
+    final colorScheme = const ColorScheme.dark(
       primary: primaryLight,
-      onPrimary: Colors.black,
       secondary: secondaryLight,
-      onSecondary: Colors.black,
-      error: Color(0xFFCF6679),
-      onError: Colors.black,
-      surface: surfaceDark,
-      onSurface: Colors.white,
-      brightness: Brightness.dark,
     );
     return _buildTheme(colorScheme, Brightness.dark);
   }

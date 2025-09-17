@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 
-import '../models/book.dart';
-import '../services/book_service.dart';
+import 'package:link/features/books/models/book.dart';
+import 'package:link/features/books/services/book_service.dart';
 
 class BookController extends GetxController {
   final BookService _service = Get.find<BookService>();
@@ -31,7 +31,9 @@ class BookController extends GetxController {
   }
 
   Future<void> searchBooks(String query, {bool loadMore = false}) async {
-    if (query.isEmpty) return;
+    if (query.isEmpty) {
+      return;
+    }
 
     // Cancel any pending debounce
     _debounce?.cancel();
@@ -52,11 +54,7 @@ class BookController extends GetxController {
 
         log('Searching for: $query (Page: $_currentPage)');
 
-        final result = await _service.searchBooks(
-          query,
-          page: _currentPage,
-          limit: _itemsPerPage,
-        );
+        final result = await _service.searchBooks(query, page: _currentPage);
 
         if (!loadMore) {
           books.clear();

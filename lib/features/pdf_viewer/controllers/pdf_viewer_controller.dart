@@ -93,7 +93,7 @@ class PdfViewerPageController extends GetxController {
 
   void _setupMemoryOptimizations() {
     // Auto-pause/resume based on visibility
-    ever(isVisible, (bool visible) {
+    ever(isVisible, (visible) {
       if (!visible) {
         _pauseRenderingOptimizations();
       } else {
@@ -194,7 +194,7 @@ class PdfViewerPageController extends GetxController {
       downloadProgress.value = 0.0;
       pdfReady.value = false;
 
-     log('Loading PDF: $pdfUrl (Attempt ${_retryCount + 1})');
+      log('Loading PDF: $pdfUrl (Attempt ${_retryCount + 1})');
 
       // Cancel any ongoing download
       _downloadCancelToken?.cancel('New load started');
@@ -205,20 +205,15 @@ class PdfViewerPageController extends GetxController {
       Uint8List bytes;
 
       if (fileInfo != null) {
-       log('Loading PDF from cache');
+        log('Loading PDF from cache');
         bytes = await fileInfo.file.readAsBytes();
       } else {
-       log('Downloading PDF from network');
+        log('Downloading PDF from network');
         bytes = await _downloadPdfBytes();
         if (bytes.isEmpty) throw Exception('Downloaded PDF is empty');
 
         // Cache the downloaded file
-        await _cacheManager.putFile(
-          pdfUrl!,
-          bytes,
-          maxAge: const Duration(days: 30),
-          fileExtension: 'pdf',
-        );
+        await _cacheManager.putFile(pdfUrl!, bytes, fileExtension: 'pdf');
       }
 
       // Create PDF document
@@ -229,7 +224,7 @@ class PdfViewerPageController extends GetxController {
         _pdfDocument = await PdfDocument.openData(bytes);
 
         // Create controller with the document
-        _pdfxController = PdfController(document: _pdfDocument, initialPage: 1);
+        _pdfxController = PdfController(document: _pdfDocument);
 
         // Get total pages count
         final pageCount = await _pdfDocument.pageCount;
@@ -249,7 +244,7 @@ class PdfViewerPageController extends GetxController {
         _retryCount = 0; // Reset retry counter on success
         isInitialized.value = true;
 
-       log('PDF loaded successfully: ${totalPages.value} pages');
+        log('PDF loaded successfully: ${totalPages.value} pages');
       } catch (e, stackTrace) {
         log(
           'Error initializing PDF document or controller',
@@ -268,7 +263,7 @@ class PdfViewerPageController extends GetxController {
       );
 
       if (_retryCount < _maxRetryAttempts) {
-       log('Retrying in ${_retryDelay.inSeconds} seconds...');
+        log('Retrying in ${_retryDelay.inSeconds} seconds...');
         await Future.delayed(_retryDelay);
         _loadPdfDocument().catchError((error, stackTrace) {
           handleLoadError(error, stackTrace);
@@ -306,15 +301,11 @@ class PdfViewerPageController extends GetxController {
 
             // Update loading message based on progress
             if (progress < 0.3) {
-             log(
-                'Downloading PDF: ${(progress * 100).toStringAsFixed(0)}%',
-              );
+              log('Downloading PDF: ${(progress * 100).toStringAsFixed(0)}%');
             } else if (progress < 0.7) {
-             log(
-                'Downloading PDF: ${(progress * 100).toStringAsFixed(0)}%',
-              );
+              log('Downloading PDF: ${(progress * 100).toStringAsFixed(0)}%');
             } else if (progress < 0.9) {
-             log(
+              log(
                 'Finishing download: ${(progress * 100).toStringAsFixed(0)}%',
               );
             }
@@ -432,7 +423,6 @@ class PdfViewerPageController extends GetxController {
         _pdfxController = PdfController(
           document: _pdfDocument!,
           initialPage: currentPage,
-          viewportFraction: 1.0,
         );
       } catch (e) {
         log('Error updating zoom', error: e);
@@ -557,7 +547,7 @@ class PdfViewerPageController extends GetxController {
   Future<void> clearCache() async {
     if (pdfUrl != null) {
       await _cacheManager.removeFile(pdfUrl!);
-     log('Cleared cache for PDF: $pdfUrl');
+      log('Cleared cache for PDF: $pdfUrl');
     }
   }
 

@@ -15,9 +15,8 @@ import '../controllers/book_detail_controller.dart';
 
 /// Book detail page showing detailed information about a specific book
 class BookDetailPage extends StatelessWidget {
-  final String bookId;
-
   const BookDetailPage({super.key, required this.bookId});
+  final String bookId;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +64,6 @@ class BookDetailPage extends StatelessWidget {
     return SliverAppBar(
       expandedHeight: 320,
       collapsedHeight: kToolbarHeight,
-      floating: false,
       pinned: true,
       stretch: true,
       backgroundColor: theme.colorScheme.surface,
@@ -333,7 +331,7 @@ class BookDetailPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -570,7 +568,7 @@ class BookDetailPage extends StatelessWidget {
         metadata['Subject Count'] = '${book.subjects.length} topics';
       }
     } catch (e) {
-       log('Somthing Wrong:$e');
+      log('Somthing Wrong:$e');
     }
 
     if (metadata.isEmpty) return const SizedBox.shrink();

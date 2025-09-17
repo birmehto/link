@@ -1,18 +1,8 @@
 import 'package:equatable/equatable.dart';
-import '../../../core/constants/api_constants.dart';
+import 'package:link/core/constants/api_constants.dart';
 
 /// Book model representing a book from various sources (OpenLibrary, Gutendex)
 class Book extends Equatable {
-  final String workId;
-  final String title;
-  final String? authorName;
-  final String? coverUrl;
-  final String? pdfUrl;
-  final String? description;
-  final List<String> subjects;
-  final int? firstPublishYear;
-  final Rating? rating;
-
   const Book({
     required this.workId,
     required this.title,
@@ -24,37 +14,6 @@ class Book extends Equatable {
     this.firstPublishYear,
     this.rating,
   });
-
-  // Computed properties
-  String get publishYear => firstPublishYear?.toString() ?? 'Unknown Year';
-
-  String get formattedRating => rating?.formatted ?? 'No ratings';
-
-  String get shortDescription {
-    if (description == null || description!.isEmpty) {
-      return 'No description available.';
-    }
-    final firstSentence = description!.split('.').first;
-    return firstSentence.isEmpty ? description! : '$firstSentence.';
-  }
-
-  String get displayAuthor => authorName ?? 'Unknown Author';
-
-  bool get hasPdf => pdfUrl != null && pdfUrl!.isNotEmpty;
-
-  bool get hasCover => coverUrl != null && coverUrl!.isNotEmpty;
-
-  bool get hasRating => rating != null && rating!.average != null;
-
-  /// Get cover URL with specific size
-  String? getCoverUrl({String size = ApiConstants.mediumSize}) {
-    if (!hasCover) return null;
-    if (coverUrl!.contains('covers.openlibrary.org')) {
-      // Replace size in existing OpenLibrary URL
-      return coverUrl!.replaceAll(RegExp(r'-[SML]\.jpg$'), '-$size.jpg');
-    }
-    return coverUrl;
-  }
 
   // Factory constructors
   factory Book.fromOpenLibraryJson(Map<String, dynamic> json) {
@@ -94,13 +53,73 @@ class Book extends Equatable {
     );
   }
 
+  factory Book.fromJson(Map<String, dynamic> json) {
+    return Book(
+      workId: json['workId'] as String,
+      title: json['title'] as String,
+      authorName: json['authorName'] as String?,
+      coverUrl: json['coverUrl'] as String?,
+      pdfUrl: json['pdfUrl'] as String?,
+      description: json['description'] as String?,
+      subjects: (json['subjects'] as List?)?.cast<String>() ?? [],
+      firstPublishYear: json['firstPublishYear'] as int?,
+      rating: json['rating'] != null
+          ? Rating.fromJson(json['rating'] as Map<String, dynamic>)
+          : null,
+    );
+  }
+  final String workId;
+  final String title;
+  final String? authorName;
+  final String? coverUrl;
+  final String? pdfUrl;
+  final String? description;
+  final List<String> subjects;
+  final int? firstPublishYear;
+  final Rating? rating;
+
+  // Computed properties
+  String get publishYear => firstPublishYear?.toString() ?? 'Unknown Year';
+
+  String get formattedRating => rating?.formatted ?? 'No ratings';
+
+  String get shortDescription {
+    if (description == null || description!.isEmpty) {
+      return 'No description available.';
+    }
+    final firstSentence = description!.split('.').first;
+    return firstSentence.isEmpty ? description! : '$firstSentence.';
+  }
+
+  String get displayAuthor => authorName ?? 'Unknown Author';
+
+  bool get hasPdf => pdfUrl != null && pdfUrl!.isNotEmpty;
+
+  bool get hasCover => coverUrl != null && coverUrl!.isNotEmpty;
+
+  bool get hasRating => rating != null && rating!.average != null;
+
+  /// Get cover URL with specific size
+  String? getCoverUrl({String size = ApiConstants.mediumSize}) {
+    if (!hasCover) {
+      return null;
+    }
+    if (coverUrl!.contains('covers.openlibrary.org')) {
+      // Replace size in existing OpenLibrary URL
+      return coverUrl!.replaceAll(RegExp(r'-[SML]\.jpg$'), '-$size.jpg');
+    }
+    return coverUrl;
+  }
+
   // Private parsing helpers
   static String _parseWorkId(dynamic key) {
     return key?.toString().split('/').last ?? '';
   }
 
   static String? _parseAuthorName(dynamic authorList) {
-    if (authorList is! List) return null;
+    if (authorList is! List) {
+      return null;
+    }
     return authorList
         .firstWhere(
           (name) => name != null && name.toString().isNotEmpty,
@@ -110,8 +129,14 @@ class Book extends Equatable {
   }
 
   static String? _parseOpenLibraryCoverUrl(dynamic coverId) {
-    if (coverId == null) return null;
-    return ApiConstants.getCoverUrl('id', coverId.toString(), ApiConstants.largeSize);
+    if (coverId == null) {
+      return null;
+    }
+    return ApiConstants.getCoverUrl(
+      'id',
+      coverId.toString(),
+      ApiConstants.largeSize,
+    );
   }
 
   static String? _parseDescription(dynamic firstSentence) {
@@ -122,7 +147,9 @@ class Book extends Equatable {
   }
 
   static List<String> _parseSubjects(dynamic subjectData) {
-    if (subjectData is! List) return [];
+    if (subjectData is! List) {
+      return [];
+    }
     return subjectData
         .take(5)
         .map((e) => e.toString())
@@ -131,7 +158,9 @@ class Book extends Equatable {
   }
 
   static int? _parseFirstPublishYear(dynamic year) {
-    if (year == null) return null;
+    if (year == null) {
+      return null;
+    }
     return int.tryParse(year.toString());
   }
 
@@ -141,13 +170,18 @@ class Book extends Equatable {
         : null;
     final ratingCount = count != null ? int.tryParse(count.toString()) : null;
 
-    if (avgRating == null && ratingCount == null) return null;
+    if (avgRating == null && ratingCount == null) {
+      return null;
+    }
     return Rating(average: avgRating, count: ratingCount);
   }
 
   // Gutendex specific parsing
   static String? _parseGutendexAuthor(dynamic authors) {
-    if (authors is! List || authors.isEmpty) return null;
+    if (authors is! List || authors.isEmpty) {
+      return null;
+    }
+    // ignore: avoid_dynamic_calls
     return authors[0]['name']?.toString();
   }
 
@@ -160,11 +194,14 @@ class Book extends Equatable {
   }
 
   static String? _parseGutendexDescription(dynamic subjects) {
-    if (subjects is! List || subjects.isEmpty) return null;
+    if (subjects is! List || subjects.isEmpty) {
+      return null;
+    }
     return subjects.join('. ');
   }
 
   static List<String> _parseGutendexSubjects(dynamic bookshelves) {
+    // ignore: always_put_control_body_on_new_line
     if (bookshelves is! List) return [];
     return bookshelves
         .take(5)
@@ -233,32 +270,23 @@ class Book extends Equatable {
     };
   }
 
-  factory Book.fromJson(Map<String, dynamic> json) {
-    return Book(
-      workId: json['workId'] as String,
-      title: json['title'] as String,
-      authorName: json['authorName'] as String?,
-      coverUrl: json['coverUrl'] as String?,
-      pdfUrl: json['pdfUrl'] as String?,
-      description: json['description'] as String?,
-      subjects: (json['subjects'] as List?)?.cast<String>() ?? [],
-      firstPublishYear: json['firstPublishYear'] as int?,
-      rating: json['rating'] != null
-          ? Rating.fromJson(json['rating'] as Map<String, dynamic>)
-          : null,
-    );
-  }
-
   @override
-  String toString() => 'Book(workId: $workId, title: $title, author: $authorName)';
+  String toString() =>
+      'Book(workId: $workId, title: $title, author: $authorName)';
 }
 
 /// Rating model for book ratings
 class Rating extends Equatable {
+  const Rating({this.average, this.count});
+
+  factory Rating.fromJson(Map<String, dynamic> json) {
+    return Rating(
+      average: (json['average'] as num?)?.toDouble(),
+      count: json['count'] as int?,
+    );
+  }
   final double? average;
   final int? count;
-
-  const Rating({this.average, this.count});
 
   // Format only the numeric value and count — no stars here
   String get formatted {
@@ -274,17 +302,9 @@ class Rating extends Equatable {
     return {'average': average, 'count': count};
   }
 
-  factory Rating.fromJson(Map<String, dynamic> json) {
-    return Rating(
-      average: (json['average'] as num?)?.toDouble(),
-      count: json['count'] as int?,
-    );
-  }
-
   @override
   List<Object?> get props => [average, count];
 
   @override
   String toString() => formatted;
 }
-

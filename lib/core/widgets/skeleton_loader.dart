@@ -3,20 +3,21 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SkeletonLoader extends StatelessWidget {
-  final Widget child;
-  final bool isLoading;
-  final Duration? duration;
-
   const SkeletonLoader({
     super.key,
     required this.child,
     this.isLoading = false,
     this.duration,
   });
+  final Widget child;
+  final bool isLoading;
+  final Duration? duration;
 
   @override
   Widget build(BuildContext context) {
-    if (!isLoading) return child;
+    if (!isLoading) {
+      return child;
+    }
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
@@ -41,9 +42,8 @@ class SkeletonLoader extends StatelessWidget {
 
 /// Book list skeleton loader
 class BookListSkeleton extends StatelessWidget {
-  final int itemCount;
-
   const BookListSkeleton({super.key, this.itemCount = 6});
+  final int itemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +59,8 @@ class BookListSkeleton extends StatelessWidget {
 }
 
 class BookCardSkeleton extends StatelessWidget {
-  final int index;
-
   const BookCardSkeleton({super.key, required this.index});
+  final int index;
 
   Color _getSkeletonColor(ThemeData theme) {
     final isDark = theme.brightness == Brightness.dark;
@@ -265,10 +264,9 @@ class BookDetailSkeleton extends StatelessWidget {
 
 /// Grid skeleton loader
 class GridSkeleton extends StatelessWidget {
+  const GridSkeleton({super.key, this.itemCount = 8, this.crossAxisCount = 2});
   final int itemCount;
   final int crossAxisCount;
-
-  const GridSkeleton({super.key, this.itemCount = 8, this.crossAxisCount = 2});
 
   Color _getSkeletonColor(ThemeData theme) {
     final isDark = theme.brightness == Brightness.dark;
@@ -328,11 +326,6 @@ class GridSkeleton extends StatelessWidget {
 
 /// Loading overlay with blur effect
 class LoadingOverlay extends StatelessWidget {
-  final Widget child;
-  final bool isLoading;
-  final String? message;
-  final Color? backgroundColor;
-
   const LoadingOverlay({
     super.key,
     required this.child,
@@ -340,6 +333,10 @@ class LoadingOverlay extends StatelessWidget {
     this.message,
     this.backgroundColor,
   });
+  final Widget child;
+  final bool isLoading;
+  final String? message;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -371,7 +368,6 @@ class LoadingOverlay extends StatelessWidget {
                                   color: theme.colorScheme.outline.withValues(
                                     alpha: 0.3,
                                   ),
-                                  width: 1,
                                 )
                               : null,
                           boxShadow: [

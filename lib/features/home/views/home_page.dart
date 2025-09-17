@@ -26,14 +26,14 @@ class HomePage extends StatelessWidget {
   Widget _buildCurrentPage(int index) {
     switch (index) {
       case 0:
-        return  BookListPage();
+        return const BookListPage();
       case 1:
         return const CategoriesPage();
       case 2:
         return const FavoritesPage();
 
       default:
-        return  BookListPage();
+        return const BookListPage();
     }
   }
 

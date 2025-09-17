@@ -7,16 +7,15 @@ import 'package:visibility_detector/visibility_detector.dart';
 import '../models/book.dart';
 
 class OptimizedBookCard extends StatelessWidget {
-  final Book book;
-  final VoidCallback onTap;
-  final int index;
-
   const OptimizedBookCard({
     super.key,
     required this.book,
     required this.onTap,
     required this.index,
   });
+  final Book book;
+  final VoidCallback onTap;
+  final int index;
 
   @override
   Widget build(BuildContext context) {

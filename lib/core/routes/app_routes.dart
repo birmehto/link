@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../features/books/views/book_detail_page.dart';
-import '../../features/books/views/book_list_page.dart';
-import '../../features/home/controllers/home_controller.dart';
-import '../../features/home/views/home_page.dart';
-import '../../features/pdf_viewer/views/optimized_pdf_viewer_page.dart';
+import 'package:link/features/books/views/book_detail_page.dart';
+import 'package:link/features/books/views/book_list_page.dart';
+import 'package:link/features/home/controllers/home_controller.dart';
+import 'package:link/features/home/views/home_page.dart';
+import 'package:link/features/pdf_viewer/views/optimized_pdf_viewer_page.dart';
 
 /// Application route names
 class AppRoutes {
@@ -46,7 +45,7 @@ class AppPages {
     // Books listing (same as home but separate route)
     GetPage(
       name: AppRoutes.books,
-      page: () => BookListPage(),
+      page: () => const BookListPage(),
       transition: defaultTransition,
       binding: BooksBinding(),
     ),
@@ -54,7 +53,7 @@ class AppPages {
     // Search page (reuses book list with search mode)
     GetPage(
       name: AppRoutes.search,
-      page: () => BookListPage(isSearchMode: true),
+      page: () => const BookListPage(isSearchMode: true),
       transition: Transition.cupertino,
       binding: BooksBinding(),
     ),
@@ -72,7 +71,7 @@ class AppPages {
       name: AppRoutes.pdfViewer,
       page: () => _buildPdfViewerPage(),
       transition: Transition.cupertino,
-      transitionDuration: Duration(milliseconds: 500),
+      transitionDuration: const Duration(milliseconds: 500),
       binding: PdfViewerBinding(),
     ),
   ];

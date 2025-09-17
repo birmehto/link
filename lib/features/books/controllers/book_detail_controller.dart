@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 
-import '../models/book.dart';
-import '../services/book_service.dart';
+import 'package:link/features/books/models/book.dart';
+import 'package:link/features/books/services/book_service.dart';
 
 class BookDetailController extends GetxController {
   final BookService _service = Get.find<BookService>();

@@ -10,9 +10,8 @@ import '../widgets/book_card.dart';
 
 /// Book list page – clean and efficient implementation using GetX
 class BookListPage extends StatelessWidget {
-  final bool isSearchMode;
-
   const BookListPage({super.key, this.isSearchMode = false});
+  final bool isSearchMode;
 
   BookController get controller => Get.find<BookController>();
 

@@ -179,7 +179,9 @@ class NetworkService extends GetxService {
 
   /// Wait for internet connection
   Future<void> waitForConnection({Duration? timeout}) async {
-    if (isConnected.value) return;
+    if (isConnected.value) {
+      return;
+    }
 
     final completer = Completer<void>();
     StreamSubscription? subscription;

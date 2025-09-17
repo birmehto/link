@@ -1,1 +1,18 @@
 include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
+    avoid_print: true
+    prefer_final_fields: true
+    unnecessary_null_checks: true
+    avoid_types_on_closure_parameters: true
+    prefer_typing_uninitialized_variables: true
+    use_key_in_widget_constructors: true
+    public_member_api_docs: false
+    avoid_field_initializers_in_const_classes: true
+    sort_constructors_first: true
+    prefer_const_constructors_in_immutables: true
+    avoid_redundant_argument_values: true
+    prefer_null_aware_operators: true

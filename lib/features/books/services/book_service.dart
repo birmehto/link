@@ -3,9 +3,9 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 
-import '../../../core/constants/api_constants.dart';
-import '../../../core/network/api_client.dart';
-import '../models/book.dart';
+import 'package:link/core/constants/api_constants.dart';
+import 'package:link/core/network/api_client.dart';
+import 'package:link/features/books/models/book.dart';
 
 class BookService extends GetxService {
   late final ApiClient _apiClient;

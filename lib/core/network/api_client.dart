@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:get/get.dart' as getx;
 
-import '../constants/api_constants.dart';
-import '../error/exceptions.dart';
+import 'package:link/core/constants/api_constants.dart';
+import 'package:link/core/error/exceptions.dart';
 
 /// HTTP client wrapper using Dio with caching, logging, and error handling
 class ApiClient extends getx.GetxService {
@@ -33,9 +33,7 @@ class ApiClient extends getx.GetxService {
     _cacheStore = MemCacheStore();
     final cacheOptions = CacheOptions(
       store: _cacheStore,
-      policy: CachePolicy.request,
       maxStale: const Duration(days: 7),
-      priority: CachePriority.normal,
     );
     // Add interceptors
     _dio.interceptors.addAll([DioCacheInterceptor(options: cacheOptions)]);
@@ -163,15 +161,15 @@ class ApiClient extends getx.GetxService {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        return NetworkException(
+        return const NetworkException(
           'Connection timeout. Please check your internet connection.',
         );
       case DioExceptionType.badResponse:
         return ServerException(_getServerErrorMessage(e.response?.statusCode));
       case DioExceptionType.cancel:
-        return NetworkException('Request was cancelled');
+        return const NetworkException('Request was cancelled');
       case DioExceptionType.connectionError:
-        return NetworkException('No internet connection');
+        return const NetworkException('No internet connection');
       default:
         return UnknownException('An unexpected error occurred: ${e.message}');
     }

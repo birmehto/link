@@ -21,22 +21,6 @@ const double kZoomStep = 0.2;
 
 /// Optimized stateless PDF viewer page with performance enhancements
 class OptimizedPdfViewerPage extends StatefulWidget {
-  final String pdfUrl;
-  final String? title;
-  final bool autoHideControls;
-  final bool showPageIndicator;
-  final bool enableDownload;
-  final bool enableShare;
-  final bool enableFullscreen;
-  final Color? backgroundColor;
-  final Color? progressColor;
-  final Color? indicatorColor;
-  final Color? indicatorBackgroundColor;
-  final Color? indicatorTextColor;
-  final Widget? loadingWidget;
-  final Widget? errorWidget;
-  final Widget? emptyWidget;
-
   const OptimizedPdfViewerPage({
     super.key,
     required this.pdfUrl,
@@ -55,6 +39,21 @@ class OptimizedPdfViewerPage extends StatefulWidget {
     this.errorWidget,
     this.emptyWidget,
   });
+  final String pdfUrl;
+  final String? title;
+  final bool autoHideControls;
+  final bool showPageIndicator;
+  final bool enableDownload;
+  final bool enableShare;
+  final bool enableFullscreen;
+  final Color? backgroundColor;
+  final Color? progressColor;
+  final Color? indicatorColor;
+  final Color? indicatorBackgroundColor;
+  final Color? indicatorTextColor;
+  final Widget? loadingWidget;
+  final Widget? errorWidget;
+  final Widget? emptyWidget;
 
   @override
   State<OptimizedPdfViewerPage> createState() => _OptimizedPdfViewerPageState();
@@ -393,6 +392,7 @@ class _OptimizedPdfViewerPageState extends State<OptimizedPdfViewerPage>
   Future<void> _handleMenuAction(String value) async {
     switch (value) {
       case 'share':
+        // ignore: deprecated_member_use
         await Share.share('Check out this PDF: ${widget.pdfUrl}');
         break;
       case 'open_in_browser':

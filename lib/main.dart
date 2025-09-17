@@ -20,9 +20,7 @@ Future<void> _initializeServices() async {
   final apiClient = ApiClient();
   await apiClient.init();
   Get.put(apiClient, permanent: true);
-
   Get.put(DeepLinkService(), permanent: true);
-
   Get.put(NetworkService(), permanent: true);
   Get.put(BookService(), permanent: true);
 }

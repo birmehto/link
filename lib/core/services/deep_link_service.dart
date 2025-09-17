@@ -3,8 +3,7 @@ import 'dart:developer';
 
 import 'package:app_links/app_links.dart';
 import 'package:get/get.dart';
-
-import '../routes/app_routes.dart';
+import 'package:link/core/routes/app_routes.dart';
 
 /// Service for handling deep links and app navigation
 class DeepLinkService extends GetxService {
@@ -166,7 +165,9 @@ class DeepLinkService extends GetxService {
   /// Create a PDF viewer link for sharing
   Uri createPdfLink(String pdfUrl, {String? title}) {
     final params = {'url': pdfUrl};
-    if (title != null) params['title'] = title;
+    if (title != null) {
+      params['title'] = title;
+    }
 
     return Uri.parse(
       'https://openlibrary.link/pdf',

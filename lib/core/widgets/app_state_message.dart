@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class AppStateMessage extends StatelessWidget {
-  final IconData icon;
-  final Color? iconColor;
-  final String title;
-  final String? message;
-  final String? primaryLabel;
-  final VoidCallback? onPrimary;
-  final String? secondaryLabel;
-  final VoidCallback? onSecondary;
-
   const AppStateMessage({
     super.key,
     required this.icon,
@@ -22,6 +13,14 @@ class AppStateMessage extends StatelessWidget {
     this.secondaryLabel,
     this.onSecondary,
   });
+  final IconData icon;
+  final Color? iconColor;
+  final String title;
+  final String? message;
+  final String? primaryLabel;
+  final VoidCallback? onPrimary;
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
 
   @override
   Widget build(BuildContext context) {
