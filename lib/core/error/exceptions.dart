@@ -1,4 +1,3 @@
-/// Base application exception
 abstract class AppException implements Exception {
   const AppException(
     this.message, {
@@ -91,4 +90,27 @@ class PermissionException extends AppException {
 
   @override
   String toString() => 'PermissionException: $message';
+}
+
+String getServerErrorMessage(int? statusCode) {
+  switch (statusCode) {
+    case 400:
+      return 'Bad request. Please check your input.';
+    case 401:
+      return 'Unauthorized. Please login again.';
+    case 403:
+      return 'Access forbidden.';
+    case 404:
+      return 'Resource not found.';
+    case 429:
+      return 'Too many requests. Please try again later.';
+    case 500:
+      return 'Internal server error. Please try again later.';
+    case 502:
+      return 'Bad gateway. Please try again later.';
+    case 503:
+      return 'Service unavailable. Please try again later.';
+    default:
+      return 'Server error occurred. Please try again later.';
+  }
 }

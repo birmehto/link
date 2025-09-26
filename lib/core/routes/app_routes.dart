@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:link/features/books/views/book_detail_page.dart';
-import 'package:link/features/books/views/book_list_page.dart';
-import 'package:link/features/home/controllers/home_controller.dart';
-import 'package:link/features/home/views/home_page.dart';
-import 'package:link/features/pdf_viewer/views/optimized_pdf_viewer_page.dart';
+
+import '../../features/book_detail/view/book_detail_page.dart';
+import '../../features/books/views/book_list_page.dart';
+import '../../features/home/controllers/home_controller.dart';
+import '../../features/home/views/home_page.dart';
+import '../../features/pdf_viewer/views/pdf_viewer_page.dart';
 
 /// Application route names
 class AppRoutes {
@@ -47,7 +48,7 @@ class AppPages {
       name: AppRoutes.books,
       page: () => const BookListPage(),
       transition: defaultTransition,
-      binding: BooksBinding(),
+      // binding: BooksBinding(),
     ),
 
     // Search page (reuses book list with search mode)
@@ -55,15 +56,14 @@ class AppPages {
       name: AppRoutes.search,
       page: () => const BookListPage(isSearchMode: true),
       transition: Transition.cupertino,
-      binding: BooksBinding(),
+      // binding: BooksBinding(),
     ),
 
     // Book details page
     GetPage(
       name: AppRoutes.bookDetail,
       page: () => _buildBookDetailPage(),
-      transition: Transition.cupertino,
-      binding: BookDetailBinding(),
+      // binding: BookDetailBinding(),
     ),
 
     // PDF viewer page
@@ -72,7 +72,7 @@ class AppPages {
       page: () => _buildPdfViewerPage(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 500),
-      binding: PdfViewerBinding(),
+      // binding: PdfViewerBinding(),
     ),
   ];
 
@@ -105,7 +105,7 @@ class AppPages {
 
     // Args can be either a String (URL) or Map with additional data
     if (args is String) {
-      return OptimizedPdfViewerPage(pdfUrl: args);
+      return PdfViewerPage(pdfUrl: args);
     } else if (args is Map<String, dynamic>) {
       final pdfUrl = args['url'] as String?;
       final title = args['title'] as String?;
@@ -118,7 +118,7 @@ class AppPages {
         );
       }
 
-      return OptimizedPdfViewerPage(pdfUrl: pdfUrl, title: title);
+      return PdfViewerPage(pdfUrl: pdfUrl, title: title);
     }
 
     return const Scaffold(
@@ -169,27 +169,27 @@ class AppNavigation {
   }
 }
 
-// Placeholder bindings - will be implemented when we move controllers
-class BooksBinding extends Bindings {
-  @override
-  void dependencies() {
-    // Get.lazyPut(() => BookController());
-  }
-}
+// // Placeholder bindings - will be implemented when we move controllers
+// class BooksBinding extends Bindings {
+//   @override
+//   void dependencies() {
+//     // Get.lazyPut(() => BookController());
+//   }
+// }
 
-class BookDetailBinding extends Bindings {
-  @override
-  void dependencies() {
-    // Get.lazyPut(() => BookDetailController());
-  }
-}
+// class BookDetailBinding extends Bindings {
+//   @override
+//   void dependencies() {
+//     // Get.lazyPut(() => BookDetailController());
+//   }
+// }
 
-class PdfViewerBinding extends Bindings {
-  @override
-  void dependencies() {
-    // Get.lazyPut(() => PdfViewerController());
-  }
-}
+// class PdfViewerBinding extends Bindings {
+//   @override
+//   void dependencies() {
+//     // Get.lazyPut(() => PdfViewerController());
+//   }
+// }
 
 class HomeBinding extends Bindings {
   @override

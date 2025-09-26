@@ -3,9 +3,8 @@ import 'dart:developer';
 
 import 'package:get/get.dart';
 
-import 'package:link/core/constants/api_constants.dart';
-import 'package:link/core/network/api_client.dart';
-import 'package:link/features/books/models/book.dart';
+import '../../../core/core.dart';
+import '../../../shared/models/book.dart';
 
 class BookService extends GetxService {
   late final ApiClient _apiClient;
@@ -62,7 +61,7 @@ class BookService extends GetxService {
         ApiConstants.getWork.replaceAll('{id}', workId),
       );
 
-      var data = response;
+      final data = response;
 
       // Handle redirect
       if (data['type']?['key'] == '/type/redirect' &&

@@ -4,15 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../models/book.dart';
+import '../../../shared/models/book.dart';
 
-class OptimizedBookCard extends StatelessWidget {
-  const OptimizedBookCard({
+class BookCard extends StatelessWidget {
+  const BookCard({
     super.key,
     required this.book,
     required this.onTap,
     required this.index,
   });
+
   final Book book;
   final VoidCallback onTap;
   final int index;
@@ -20,10 +21,12 @@ class OptimizedBookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return VisibilityDetector(
       key: Key('book-card-${book.workId}'),
       onVisibilityChanged: (info) {
         if (info.visibleFraction > 0.1 && book.hasCover) {
+          // Precache only once (prevent repeated calls)
           precacheImage(CachedNetworkImageProvider(book.coverUrl!), context);
         }
       },
@@ -38,12 +41,22 @@ class OptimizedBookCard extends StatelessWidget {
                 ),
                 color: theme.colorScheme.surfaceContainerLowest,
                 child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
                   onTap: () {
                     HapticFeedback.selectionClick();
                     onTap();
                   },
-                  borderRadius: BorderRadius.circular(16),
-                  child: _buildCardContent(context, theme),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _BookCover(book: book),
+                        const SizedBox(width: 16),
+                        Expanded(child: _BookInfo(book: book)),
+                      ],
+                    ),
+                  ),
                 ),
               )
               .animate(delay: Duration(milliseconds: index * 50))
@@ -51,22 +64,19 @@ class OptimizedBookCard extends StatelessWidget {
               .slideY(begin: 0.1, duration: 400.ms, curve: Curves.easeOut),
     );
   }
+}
 
-  Widget _buildCardContent(BuildContext context, ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildBookCover(context, theme),
-          const SizedBox(width: 16),
-          Expanded(child: _buildBookInfo(context, theme)),
-        ],
-      ),
-    );
-  }
+/// --------------------
+/// 📚 Sub-widgets
+/// --------------------
 
-  Widget _buildBookCover(BuildContext context, ThemeData theme) {
+class _BookCover extends StatelessWidget {
+  const _BookCover({required this.book});
+  final Book book;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Hero(
       tag: 'book-cover-${book.workId}',
       child: Container(
@@ -90,19 +100,24 @@ class OptimizedBookCard extends StatelessWidget {
                   fit: BoxFit.cover,
                   fadeInDuration: const Duration(milliseconds: 300),
                   fadeOutDuration: const Duration(milliseconds: 100),
-                  placeholder: (context, url) => _buildCoverPlaceholder(theme),
-                  errorWidget: (context, url, error) =>
-                      _buildCoverPlaceholder(theme),
+                  placeholder: (_, _) => _CoverPlaceholder(theme: theme),
+                  errorWidget: (_, _, _) => _CoverPlaceholder(theme: theme),
                   memCacheWidth: 160,
                   memCacheHeight: 240,
                 )
-              : _buildCoverPlaceholder(theme),
+              : _CoverPlaceholder(theme: theme),
         ),
       ),
     );
   }
+}
 
-  Widget _buildCoverPlaceholder(ThemeData theme) {
+class _CoverPlaceholder extends StatelessWidget {
+  const _CoverPlaceholder({required this.theme});
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       color: theme.colorScheme.surfaceContainer,
       child: Center(
@@ -114,87 +129,91 @@ class OptimizedBookCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildBookInfo(BuildContext context, ThemeData theme) {
+class _BookInfo extends StatelessWidget {
+  const _BookInfo({required this.book});
+  final Book book;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTitle(context, theme),
+        Text(
+          book.title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            height: 1.2,
+          ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         const SizedBox(height: 8),
         if (book.authorName != null) ...[
-          _buildAuthor(context, theme),
+          Row(
+            children: [
+              Icon(
+                Icons.person_outline,
+                size: 16,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  book.displayAuthor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 4),
         ],
-        _buildMetaBadges(context, theme),
-        if (_shouldShowDescription()) ...[
-          const SizedBox(height: 8),
-          _buildDescription(context, theme),
-        ],
-        const SizedBox(height: 8),
-      ],
-    );
-  }
-
-  Widget _buildTitle(BuildContext context, ThemeData theme) {
-    return Text(
-      book.title,
-      style: theme.textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.bold,
-        height: 1.2,
-      ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  Widget _buildAuthor(BuildContext context, ThemeData theme) {
-    return Row(
-      children: [
-        Icon(
-          Icons.person_outline,
-          size: 16,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            if (book.hasRating) _RatingBadge(rating: book.rating),
+            if (book.firstPublishYear != null)
+              _YearBadge(year: book.publishYear),
+          ],
         ),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Text(
-            book.displayAuthor,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
+        if (_shouldShowDescription(book)) ...[
+          const SizedBox(height: 8),
+          Text(
+            book.shortDescription,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+              height: 1.3,
             ),
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-        ),
+        ],
       ],
     );
   }
 
-  Widget _buildMetaBadges(BuildContext context, ThemeData theme) {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        if (book.hasRating) _buildRatingBadge(theme),
-        if (book.firstPublishYear != null) _buildYearBadge(theme),
-      ],
-    );
+  bool _shouldShowDescription(Book book) {
+    return book.shortDescription.isNotEmpty &&
+        book.shortDescription != 'No description available.';
   }
+}
 
-  Widget _buildRatingBadge(ThemeData theme) {
-    final rating = book.rating;
-    if (rating == null || !rating.hasValidRating) {
-      return const SizedBox.shrink();
-    }
+class _RatingBadge extends StatelessWidget {
+  const _RatingBadge({required this.rating});
+  final Rating? rating;
 
-    // Clamp between 0 and 5
-    final average = (rating.average ?? 0.0).clamp(0.0, 5.0);
-    final roundedAverage = (average * 2).round() / 2.0;
-
-    final fullStars = roundedAverage.floor();
-    final hasHalfStar = (roundedAverage - fullStars) == 0.5;
-    final emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (rating == null || !rating!.hasValidRating) return const SizedBox();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -205,25 +224,10 @@ class OptimizedBookCard extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Full stars
-          ...List.generate(
-            fullStars,
-            (index) => const Icon(Icons.star, size: 14, color: Colors.amber),
-          ),
-          // Half star if needed
-          if (hasHalfStar)
-            const Icon(Icons.star_half, size: 14, color: Colors.amber),
-          // Empty stars
-          ...List.generate(
-            emptyStars,
-            (index) =>
-                const Icon(Icons.star_border, size: 14, color: Colors.white),
-          ),
-
+          const Icon(Icons.star, size: 14, color: Colors.amber),
           const SizedBox(width: 6),
-          // Rating text only showing the number and count
           Text(
-            rating.formatted,
+            rating!.formatted,
             style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onSurface,
               fontWeight: FontWeight.w600,
@@ -233,8 +237,15 @@ class OptimizedBookCard extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildYearBadge(ThemeData theme) {
+class _YearBadge extends StatelessWidget {
+  const _YearBadge({required this.year});
+  final String year;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -254,7 +265,7 @@ class OptimizedBookCard extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            book.publishYear,
+            year,
             style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.primary,
               fontWeight: FontWeight.w600,
@@ -263,22 +274,5 @@ class OptimizedBookCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildDescription(BuildContext context, ThemeData theme) {
-    return Text(
-      book.shortDescription,
-      style: theme.textTheme.bodySmall?.copyWith(
-        color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-        height: 1.3,
-      ),
-      maxLines: 2,
-      overflow: TextOverflow.ellipsis,
-    );
-  }
-
-  bool _shouldShowDescription() {
-    return book.shortDescription.isNotEmpty &&
-        book.shortDescription != 'No description available.';
   }
 }

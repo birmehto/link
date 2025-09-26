@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../books/views/book_list_page.dart';
-import '../../books/views/categories_page.dart';
-import '../../books/views/favorites_page.dart';
+import '../../categories/view/categories_page.dart';
+import '../../favorate/view/favorites_page.dart';
 import '../controllers/home_controller.dart';
 
 class HomePage extends StatelessWidget {
@@ -39,10 +39,10 @@ class HomePage extends StatelessWidget {
 
   Widget _buildBottomNavigationBar(ThemeData theme, HomeController controller) {
     return NavigationBar(
-      backgroundColor:
-          theme.bottomNavigationBarTheme.backgroundColor ??
-          theme.colorScheme.surface,
-      surfaceTintColor: theme.colorScheme.secondary.withValues(alpha: 0.05),
+      backgroundColor: theme.colorScheme.surface,
+      shadowColor: theme.colorScheme.shadow,
+      surfaceTintColor: theme.colorScheme.surfaceTint,
+
       selectedIndex: controller.currentIndex.value,
       onDestinationSelected: (index) {
         HapticFeedback.selectionClick();

@@ -3,12 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../core/routes/app_routes.dart';
-import '../../../core/widgets/app_state_message.dart';
-import '../../../core/widgets/skeleton_loader.dart';
+import '../../../shared/widgets/app_state_message.dart';
 import '../controllers/book_controller.dart';
 import '../widgets/book_card.dart';
+import '../widgets/book_shimmer.dart';
 
-/// Book list page – clean and efficient implementation using GetX
 class BookListPage extends StatelessWidget {
   const BookListPage({super.key, this.isSearchMode = false});
   final bool isSearchMode;
@@ -183,7 +182,7 @@ class BookListPage extends StatelessWidget {
             final book = controller.books[index];
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
-              child: OptimizedBookCard(
+              child: BookCard(
                 book: book,
                 onTap: () => _onBookTapped(book.workId),
                 index: index,

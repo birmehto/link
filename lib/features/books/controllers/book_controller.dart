@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:link/features/books/models/book.dart';
-import 'package:link/features/books/services/book_service.dart';
+import '../../../core/constants/app_contants.dart';
+import '../../../shared/models/book.dart';
+import '../../../shared/widgets/snack_bar.dart';
+import '../services/book_service.dart';
 
 class BookController extends GetxController {
   final BookService _service = Get.find<BookService>();
@@ -38,27 +41,26 @@ class BookController extends GetxController {
     // Cancel any pending debounce
     _debounce?.cancel();
 
-    // Set up debounce for search
+    // 👉 Reset immediately when new search starts
+    if (!loadMore) {
+      _currentPage = 1;
+      books.clear(); // clear instantly
+      isLoading.value = true;
+      hasMore.value = true;
+      error.value = '';
+      currentQuery.value = query;
+    }
+
+    // Debounce to avoid spamming API
     _debounce = Timer(const Duration(milliseconds: 500), () async {
       try {
-        if (!loadMore) {
-          _currentPage = 1;
-          isLoading.value = true;
-          hasMore.value = true;
-        } else {
+        if (loadMore) {
           isLoadingMore.value = true;
         }
-
-        error.value = '';
-        currentQuery.value = query;
 
         log('Searching for: $query (Page: $_currentPage)');
 
         final result = await _service.searchBooks(query, page: _currentPage);
-
-        if (!loadMore) {
-          books.clear();
-        }
 
         if (result.isNotEmpty) {
           books.addAll(result);
@@ -71,12 +73,13 @@ class BookController extends GetxController {
         log('Error searching books', error: e, stackTrace: stackTrace);
         error.value = e.toString();
 
-        // Show error message if it's not a load more operation
         if (!loadMore) {
-          Get.snackbar(
-            'Error',
-            'Failed to load books: ${e.toString()}',
-            snackPosition: SnackPosition.BOTTOM,
+          CommonSnackbar.show(
+            Get.context!,
+            message: 'Failed to load books: ${e.toString()}',
+            icon: Icons.error_outline,
+            backgroundColor: Get.theme.colorScheme.errorContainer,
+            textColor: Get.theme.colorScheme.onErrorContainer,
           );
         }
       } finally {
@@ -110,10 +113,12 @@ class BookController extends GetxController {
   }
 
   Future<void> fetchBooksDefault() async {
-    await searchBooks('popular'); // Default search query
+    final randomIndex =
+        DateTime.now().millisecondsSinceEpoch % randomBookKeywords.length;
+    final randomKeyword = randomBookKeywords[randomIndex];
+    await searchBooks(randomKeyword);
   }
 
-  /// Fetch book details by ID
   Future<Book?> getBookDetails(String workId) async {
     try {
       return await _service.getBookDetails(workId);
