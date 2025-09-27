@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../shared/models/book.dart';
-import '../../../shared/shared.dart';
 import '../models/models.dart';
 import 'pdf_viewer_controller.dart';
 
@@ -52,7 +51,6 @@ class EnhancedPdfViewerController extends GetxController {
 
   // Current PDF info
   String? _currentPdfId;
-  String? _currentPdfTitle;
 
   // Getters to expose core PDF controller functionality
   PdfViewerPageController get pdfController => _pdfController;
@@ -128,15 +126,15 @@ class EnhancedPdfViewerController extends GetxController {
 
   // Initialize the core PDF controller
   void _initializePdfController() {
-    _pdfController = Get.put(PdfViewerPageController(), permanent: false);
+    _pdfController = Get.put(PdfViewerPageController());
 
     // Listen to page changes to track reading progress
-    ever(_pdfController.currentPageNumber, (int page) {
+    ever(_pdfController.currentPageNumber, (page) {
       _onPageChanged(page);
     });
 
     // Listen to PDF ready state to load annotations
-    ever(_pdfController.pdfReady, (bool ready) {
+    ever(_pdfController.pdfReady, (ready) {
       if (ready) {
         _onPdfReady();
       }
@@ -167,7 +165,6 @@ class EnhancedPdfViewerController extends GetxController {
   }) async {
     try {
       _currentPdfId = _generatePdfId(url);
-      _currentPdfTitle = title ?? bookData?.title ?? 'Unknown Document';
 
       // Initialize core PDF functionality
       await _pdfController.initialize(url, title: title);
@@ -226,12 +223,15 @@ class EnhancedPdfViewerController extends GetxController {
       bookmarks.assignAll(pdfBookmarks);
 
       // Load reading stats
-      final stats = _statsBox?.get(_currentPdfId!);
+      final stats = _statsBox?.get(_currentPdfId);
       if (stats != null) {
         readingStats.value = stats;
         readingSessions.assignAll(stats.sessions);
       } else {
-        readingStats.value = ReadingStats(pdfId: _currentPdfId!, sessions: []);
+        readingStats.value = ReadingStats(
+          pdfId: _currentPdfId!,
+          sessions: const [],
+        );
       }
 
       log(
@@ -345,11 +345,11 @@ class EnhancedPdfViewerController extends GetxController {
         // Update reading stats
         final updatedStats =
             (readingStats.value ??
-                    ReadingStats(pdfId: _currentPdfId!, sessions: []))
+                    ReadingStats(pdfId: _currentPdfId!, sessions: const []))
                 .addSession(endedSession);
 
         readingStats.value = updatedStats;
-        await _statsBox?.put(_currentPdfId!, updatedStats);
+        await _statsBox?.put(_currentPdfId, updatedStats);
 
         log(
           'Reading session saved: ${endedSession.formattedDuration}, ${endedSession.pagesRead} pages',
