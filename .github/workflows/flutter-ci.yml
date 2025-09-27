@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: '3.5.4'
+  FLUTTER_VERSION: '3.35.4'
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
@@ -28,6 +28,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+          cache-key: flutter-${{ env.FLUTTER_VERSION }}-v2
 
       - name: Get Dependencies
         run: |
@@ -86,6 +87,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+          cache-key: flutter-${{ env.FLUTTER_VERSION }}-v2
 
       - name: Get Dependencies
         run: flutter pub get
@@ -150,7 +152,7 @@ jobs:
       - name: List downloaded files for debug
         run: ls -R release-artifacts
 
-      - name: Create Release
+      - name: Create GitHub Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
@@ -158,15 +160,17 @@ jobs:
           release_name: Release ${{ steps.get_version.outputs.version }}
           body: |
             ## What's Changed
-
-            *Your release notes here*
+            * Add your release notes here *
 
             ### 🚀 New Features
             - 
+
             ### 🐛 Bug Fixes
             - 
+
             ### 📦 Dependencies
             - 
+
             ### 📚 Documentation
             - 
           draft: false
