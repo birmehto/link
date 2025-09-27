@@ -6,6 +6,18 @@ part 'bookmark.g.dart';
 
 @HiveType(typeId: 2)
 class Bookmark extends Equatable {
+  // Factory constructor for creating from JSON
+  factory Bookmark.fromJson(Map<String, dynamic> json) {
+    return Bookmark(
+      id: json['id'] as String,
+      pdfId: json['pdfId'] as String,
+      pageNumber: json['pageNumber'] as int,
+      title: json['title'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      description: json['description'] as String?,
+      color: json['color'] != null ? Color(json['color'] as int) : null,
+    );
+  }
   const Bookmark({
     required this.id,
     required this.pdfId,
@@ -36,19 +48,6 @@ class Bookmark extends Equatable {
 
   @HiveField(6)
   final Color? color;
-
-  // Factory constructor for creating from JSON
-  factory Bookmark.fromJson(Map<String, dynamic> json) {
-    return Bookmark(
-      id: json['id'] as String,
-      pdfId: json['pdfId'] as String,
-      pageNumber: json['pageNumber'] as int,
-      title: json['title'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      description: json['description'] as String?,
-      color: json['color'] != null ? Color(json['color'] as int) : null,
-    );
-  }
 
   // Convert to JSON
   Map<String, dynamic> toJson() {

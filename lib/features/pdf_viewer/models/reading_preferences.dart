@@ -31,6 +31,38 @@ enum PageTransitionType {
 
 @HiveType(typeId: 7)
 class ReadingPreferences extends Equatable {
+  // Factory constructor for creating from JSON
+  factory ReadingPreferences.fromJson(Map<String, dynamic> json) {
+    return ReadingPreferences(
+      theme: ReadingTheme.values.firstWhere(
+        (e) => e.toString() == 'ReadingTheme.${json['theme']}',
+        orElse: () => ReadingTheme.light,
+      ),
+      brightness: (json['brightness'] as num?)?.toDouble() ?? 1.0,
+      fontSize: (json['fontSize'] as num?)?.toDouble() ?? 16.0,
+      autoHideControls: json['autoHideControls'] as bool? ?? true,
+      autoHideDelay: Duration(
+        seconds: json['autoHideDelaySeconds'] as int? ?? 3,
+      ),
+      enablePageTransitions: json['enablePageTransitions'] as bool? ?? true,
+      transitionType: PageTransitionType.values.firstWhere(
+        (e) => e.toString() == 'PageTransitionType.${json['transitionType']}',
+        orElse: () => PageTransitionType.slide,
+      ),
+      enableNightMode: json['enableNightMode'] as bool? ?? false,
+      customBackgroundColor:
+          json['customBackgroundColor'] as int? ?? 0xFFFFFFFF,
+      customTextColor: json['customTextColor'] as int? ?? 0xFF000000,
+      enableSepia: json['enableSepia'] as bool? ?? false,
+      sepiaIntensity: (json['sepiaIntensity'] as num?)?.toDouble() ?? 0.3,
+      enableHighContrast: json['enableHighContrast'] as bool? ?? false,
+      zoomLevel: (json['zoomLevel'] as num?)?.toDouble() ?? 1.0,
+      enableDoubleTapZoom: json['enableDoubleTapZoom'] as bool? ?? true,
+      enablePinchZoom: json['enablePinchZoom'] as bool? ?? true,
+      enableSwipeNavigation: json['enableSwipeNavigation'] as bool? ?? true,
+      swipeSensitivity: (json['swipeSensitivity'] as num?)?.toDouble() ?? 0.5,
+    );
+  }
   const ReadingPreferences({
     this.theme = ReadingTheme.light,
     this.brightness = 1.0,
@@ -105,39 +137,6 @@ class ReadingPreferences extends Equatable {
 
   @HiveField(17)
   final double swipeSensitivity;
-
-  // Factory constructor for creating from JSON
-  factory ReadingPreferences.fromJson(Map<String, dynamic> json) {
-    return ReadingPreferences(
-      theme: ReadingTheme.values.firstWhere(
-        (e) => e.toString() == 'ReadingTheme.${json['theme']}',
-        orElse: () => ReadingTheme.light,
-      ),
-      brightness: (json['brightness'] as num?)?.toDouble() ?? 1.0,
-      fontSize: (json['fontSize'] as num?)?.toDouble() ?? 16.0,
-      autoHideControls: json['autoHideControls'] as bool? ?? true,
-      autoHideDelay: Duration(
-        seconds: json['autoHideDelaySeconds'] as int? ?? 3,
-      ),
-      enablePageTransitions: json['enablePageTransitions'] as bool? ?? true,
-      transitionType: PageTransitionType.values.firstWhere(
-        (e) => e.toString() == 'PageTransitionType.${json['transitionType']}',
-        orElse: () => PageTransitionType.slide,
-      ),
-      enableNightMode: json['enableNightMode'] as bool? ?? false,
-      customBackgroundColor:
-          json['customBackgroundColor'] as int? ?? 0xFFFFFFFF,
-      customTextColor: json['customTextColor'] as int? ?? 0xFF000000,
-      enableSepia: json['enableSepia'] as bool? ?? false,
-      sepiaIntensity: (json['sepiaIntensity'] as num?)?.toDouble() ?? 0.3,
-      enableHighContrast: json['enableHighContrast'] as bool? ?? false,
-      zoomLevel: (json['zoomLevel'] as num?)?.toDouble() ?? 1.0,
-      enableDoubleTapZoom: json['enableDoubleTapZoom'] as bool? ?? true,
-      enablePinchZoom: json['enablePinchZoom'] as bool? ?? true,
-      enableSwipeNavigation: json['enableSwipeNavigation'] as bool? ?? true,
-      swipeSensitivity: (json['swipeSensitivity'] as num?)?.toDouble() ?? 0.5,
-    );
-  }
 
   // Convert to JSON
   Map<String, dynamic> toJson() {
@@ -260,11 +259,7 @@ class ReadingPreferences extends Equatable {
   }
 
   // Preset configurations
-  static const ReadingPreferences lightPreset = ReadingPreferences(
-    theme: ReadingTheme.light,
-    brightness: 1.0,
-    enableNightMode: false,
-  );
+  static const ReadingPreferences lightPreset = ReadingPreferences();
 
   static const ReadingPreferences darkPreset = ReadingPreferences(
     theme: ReadingTheme.dark,
@@ -276,12 +271,10 @@ class ReadingPreferences extends Equatable {
     theme: ReadingTheme.sepia,
     brightness: 0.9,
     enableSepia: true,
-    sepiaIntensity: 0.3,
   );
 
   static const ReadingPreferences highContrastPreset = ReadingPreferences(
     theme: ReadingTheme.highContrast,
-    brightness: 1.0,
     enableHighContrast: true,
     fontSize: 18.0,
   );

@@ -6,6 +6,24 @@ part 'highlight.g.dart';
 
 @HiveType(typeId: 0)
 class Highlight extends Equatable {
+  // Factory constructor for creating from JSON
+  factory Highlight.fromJson(Map<String, dynamic> json) {
+    return Highlight(
+      id: json['id'] as String,
+      pdfId: json['pdfId'] as String,
+      pageNumber: json['pageNumber'] as int,
+      selectedText: json['selectedText'] as String,
+      boundingBox: Rect.fromLTRB(
+        (json['boundingBox']['left'] as num).toDouble(),
+        (json['boundingBox']['top'] as num).toDouble(),
+        (json['boundingBox']['right'] as num).toDouble(),
+        (json['boundingBox']['bottom'] as num).toDouble(),
+      ),
+      color: Color(json['color'] as int),
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      noteId: json['noteId'] as String?,
+    );
+  }
   const Highlight({
     required this.id,
     required this.pdfId,
@@ -40,25 +58,6 @@ class Highlight extends Equatable {
 
   @HiveField(7)
   final String? noteId;
-
-  // Factory constructor for creating from JSON
-  factory Highlight.fromJson(Map<String, dynamic> json) {
-    return Highlight(
-      id: json['id'] as String,
-      pdfId: json['pdfId'] as String,
-      pageNumber: json['pageNumber'] as int,
-      selectedText: json['selectedText'] as String,
-      boundingBox: Rect.fromLTRB(
-        (json['boundingBox']['left'] as num).toDouble(),
-        (json['boundingBox']['top'] as num).toDouble(),
-        (json['boundingBox']['right'] as num).toDouble(),
-        (json['boundingBox']['bottom'] as num).toDouble(),
-      ),
-      color: Color(json['color'] as int),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      noteId: json['noteId'] as String?,
-    );
-  }
 
   // Convert to JSON
   Map<String, dynamic> toJson() {

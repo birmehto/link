@@ -5,6 +5,18 @@ part 'note.g.dart';
 
 @HiveType(typeId: 1)
 class Note extends Equatable {
+  // Factory constructor for creating from JSON
+  factory Note.fromJson(Map<String, dynamic> json) {
+    return Note(
+      id: json['id'] as String,
+      content: json['content'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      modifiedAt: json['modifiedAt'] != null
+          ? DateTime.parse(json['modifiedAt'] as String)
+          : null,
+      highlightId: json['highlightId'] as String?,
+    );
+  }
   const Note({
     required this.id,
     required this.content,
@@ -27,19 +39,6 @@ class Note extends Equatable {
 
   @HiveField(4)
   final String? highlightId;
-
-  // Factory constructor for creating from JSON
-  factory Note.fromJson(Map<String, dynamic> json) {
-    return Note(
-      id: json['id'] as String,
-      content: json['content'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      modifiedAt: json['modifiedAt'] != null
-          ? DateTime.parse(json['modifiedAt'] as String)
-          : null,
-      highlightId: json['highlightId'] as String?,
-    );
-  }
 
   // Convert to JSON
   Map<String, dynamic> toJson() {
