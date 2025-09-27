@@ -10,7 +10,6 @@ on:
 
 env:
   FLUTTER_VERSION: '3.16.0'
-  DART_VERSION: '3.0.0'
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
 jobs:
@@ -21,16 +20,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: 'stable'
+          channel: stable
           cache: true
-          cache-key: flutter-v${{ env.FLUTTER_VERSION }}-${{ runner.os }}
-          cache-path: ${{ github.workspace }}/.pub-cache
 
       - name: Get Dependencies
         run: |
@@ -46,18 +43,15 @@ jobs:
       - name: Run Tests with Coverage
         run: |
           flutter test --coverage
-          # Install lcov if not already installed
           sudo apt-get update && sudo apt-get install -y lcov
-          # Generate coverage report
           genhtml coverage/lcov.info -o coverage/html
-          # Upload to codecov if token is available
           if [ -n "$CODECOV_TOKEN" ]; then
             bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
           fi
 
       - name: Upload Coverage Report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage/html/
@@ -78,16 +72,18 @@ jobs:
             build-target: macos
           - os: windows-latest
             build-target: windows
+          - os: ubuntu-latest
+            build-target: web
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: 'stable'
+          channel: stable
           cache: true
 
       - name: Get Dependencies
@@ -103,11 +99,11 @@ jobs:
 
       - name: Upload Build Artifacts
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.build-target }}-build
           path: |
-            build/${{ matrix.build-target }}
+            build/${{ matrix.build-target }}/
             build/app/outputs/
           retention-days: 7
 
@@ -119,7 +115,7 @@ jobs:
 
     steps:
       - name: Download Web Build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: web-build
           path: build/web
@@ -145,6 +141,14 @@ jobs:
         id: get_version
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      - name: List downloaded files for debug
+        run: ls -R release-artifacts
+
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -153,9 +157,9 @@ jobs:
           release_name: Release ${{ steps.get_version.outputs.version }}
           body: |
             ## What's Changed
-            
+
             *Your release notes here*
-            
+
             ### 🚀 New Features
             - 
             ### 🐛 Bug Fixes
@@ -167,8 +171,11 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
-            build/web/**/*
+            release-artifacts/linux-build/**
+            release-artifacts/macos-build/**
+            release-artifacts/windows-build/**
+            release-artifacts/web-build/**
+            release-artifacts/app-release.apk
+            release-artifacts/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
