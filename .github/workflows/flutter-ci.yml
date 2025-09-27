@@ -45,8 +45,8 @@ jobs:
           flutter test --coverage
           sudo apt-get update && sudo apt-get install -y lcov
           genhtml coverage/lcov.info -o coverage/html
-          if [ -n "$CODECOV_TOKEN" ]; then
-            bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+          if [ -n "${{ env.CODECOV_TOKEN }}" ]; then
+            bash <(curl -s https://codecov.io/bash) -t ${{ env.CODECOV_TOKEN }}
           fi
 
       - name: Upload Coverage Report
@@ -99,7 +99,7 @@ jobs:
           fi
 
       - name: Upload Build Artifacts
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/') }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.build-target }}-build
@@ -110,7 +110,7 @@ jobs:
 
   deploy_web:
     name: Deploy Web
-    if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')) && github.event_name != 'pull_request'
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')) && github.event_name != 'pull_request' }}
     needs: build
     runs-on: ubuntu-latest
 
@@ -133,7 +133,7 @@ jobs:
 
   release:
     name: Create Release
-    if: startsWith(github.ref, 'refs/tags/')
+    if: ${{ startsWith(github.ref, 'refs/tags/') }}
     needs: [test_and_analyze, build]
     runs-on: ubuntu-latest
 
