@@ -97,42 +97,6 @@ flutter build ios --release  # iOS
 flutter build web --release  # Web
 ```
 
-## 🏗️ Architecture
-
-BookLink follows **Clean Architecture** principles with a modern Flutter stack:
-
-```
-📁 lib/
-├── 🎨 presentation/     # UI Layer (Screens, Widgets, Controllers)
-│   ├── pages/
-│   ├── widgets/
-│   └── controllers/
-├── 🧠 domain/          # Business Logic (Entities, Use Cases)
-│   ├── entities/
-│   ├── repositories/
-│   └── usecases/
-├── 💾 data/           # Data Layer (APIs, Database, Models)
-│   ├── datasources/
-│   ├── models/
-│   └── repositories/
-└── 🔧 core/          # Shared Resources (Utils, Constants, DI)
-    ├── constants/
-    ├── utils/
-    └── di/
-```
-
-### 🛠️ Tech Stack
-
-| Category | Technologies |
-|----------|-------------|
-| **Framework** | Flutter 3.35.0, Dart 3.9.0 |
-| **State Management** | GetX (Reactive Programming) |
-| **Database** | Hive (Local), Isar (Advanced Queries) |
-| **Networking** | Dio (HTTP), Retrofit (API Layer) |
-| **UI/UX** | Material Design 3, Custom Animations |
-| **Testing** | Flutter Test, Mockito, Golden Tests |
-| **Architecture** | Clean Architecture, MVVM Pattern |
-
 ## 📸 Screenshots
 
 <div align="center">
@@ -156,26 +120,6 @@ BookLink follows **Clean Architecture** principles with a modern Flutter stack:
 <img src="screenshots/profile.png" width="24%" alt="Profile">
 
 </div>
-
-## 📈 Roadmap
-
-### 🎯 **Version 2.0** *(Q2 2025)*
-- [ ] **Cloud Synchronization** - Multi-device sync with Firebase
-- [ ] **Social Features** - Share reading progress with friends
-- [ ] **Advanced Analytics** - Detailed reading insights and trends
-- [ ] **Book Clubs** - Create and join reading communities
-
-### 🎯 **Version 2.5** *(Q3 2025)*
-- [ ] **AI Recommendations** - Machine learning-powered suggestions
-- [ ] **Audio Integration** - Connect with Audible and other services
-- [ ] **Reading Challenges** - Gamification and achievement system
-- [ ] **Book Scanner** - OCR-based book addition via camera
-
-### 🎯 **Version 3.0** *(Q4 2025)*
-- [ ] **AR Book Scanner** - Augmented reality book recognition
-- [ ] **Advanced Search** - Natural language book discovery
-- [ ] **Multi-language** - Support for 15+ languages
-- [ ] **Desktop Apps** - Native Windows, macOS, and Linux versions
 
 ## 🤝 Contributing
 
@@ -231,50 +175,9 @@ Special thanks to these amazing resources and contributors:
 | Resource | Description |
 |----------|-------------|
 | [📚 Open Library](https://openlibrary.org/) | Comprehensive book database and API |
-| [🎨 Material Design](https://material.io/) | Beautiful design system and guidelines |
-| [🚀 Flutter Community](https://flutter.dev/community) | Outstanding packages and support |
-| [💫 Lottie](https://lottiefiles.com/) | Stunning animations and micro-interactions |
-| [🎯 Our Contributors](https://github.com/birmehto/booklink/graphs/contributors) | Amazing developers making BookLink better |
 
-## 📊 Project Stats
 
-<div align="center">
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=birmehto&repo=booklink&show_icons=true&theme=radical)
-
-[![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=birmehto&theme=react-dark&custom_title=BookLink%20Development%20Activity)](https://github.com/birmehto/booklink)
-
-</div>
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
-```
-MIT License - feel free to use BookLink in your own projects!
-```
-
-## 📞 Contact & Social
-
-<div align="center">
-
-**Let's connect and build amazing things together!**
-
-[![Email](https://img.shields.io/badge/Email-contact@booklink.dev-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:contact@booklink.dev)
-[![Twitter](https://img.shields.io/badge/Twitter-@birmehto-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/birmehto)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/birmehto)
-[![Website](https://img.shields.io/badge/Website-booklink.dev-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white)](https://booklink.dev)
-
-</div>
-
----
-
-<div align="center">
-
-### 🌟 **Star History**
-
-[![Star History Chart](https://api.star-history.com/svg?repos=birmehto/booklink&type=Timeline)](https://star-history.com/#birmehto/booklink&Timeline)
 
 **Made with ❤️ by the BookLink Team**
-
 </div>
